@@ -1,0 +1,40 @@
+name: baganbilash
+description: A new Flutter project.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.18.1 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  get: 
+  image_picker:
+  flutter_tflite:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+  change_app_package_name: ^1.1.0
+  flutter_launcher_icons: ^0.9.3
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/ic_launcher.png"
+
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/labels.txt
+    - assets/model_unquant.tflite
