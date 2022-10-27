@@ -1,21 +1,21 @@
-0 Adenium
-1 Air Plant
-2 Alovera
-3 Araian Wax
-4 Baby Tears
-5 Bonsai
-6 Bunny Cactus
-7 Cactus
-8 Caladium
-9 Elephant Ear
-10 Jade Plant
-11 Kamini Bonsai
-12 Kata Mukut
-13 Lucky Bamboo
-14 Mini Bamboo
-15 Pencil Cactus
-16 Pothos
-17 Snake Plant
-18 Spider Plant
-19 Wondering Jew
-20 Unknown Object
+Adenium
+Air Plant
+Alovera
+Araian Wax
+Baby Tears
+Bonsai
+Bunny Cactus
+Cactus
+Caladium
+Elephant Ear
+Jade Plant
+Kamini Bonsai
+Kata Mukut
+Lucky Bamboo
+Mini Bamboo
+Pencil Cactus
+Pothos
+Snake Plant
+Spider Plant
+Wondering Jew
+Unknown Object

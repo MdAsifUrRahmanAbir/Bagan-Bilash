@@ -1,32 +1,33 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 
 import 'utils/strings.dart';
 
 
-class PlantDetectPage extends StatefulWidget {
-  const PlantDetectPage({Key? key}) : super(key: key);
+class PlantDetectPage2 extends StatefulWidget {
+  const PlantDetectPage2({Key? key}) : super(key: key);
 
   @override
-  State<PlantDetectPage> createState() => _PlantDetectPageState();
+  State<PlantDetectPage2> createState() => _PlantDetectPageState();
 }
 
-class _PlantDetectPageState extends State<PlantDetectPage> {
+class _PlantDetectPageState extends State<PlantDetectPage2> {
   List? _outputs;
   XFile? _image;
-  String? plantName;
+  bool _loading = false;
 
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
+    _loading = true;
 
     loadModel().then((value) {
       setState(() {
+        _loading = false;
       });
     });
   }
@@ -46,14 +47,12 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         numResults: 2,
         threshold: 0.2,
         asynch: true);
-
-    output?.forEach((element) {
-      print(element);
-    });
-
     setState(() {
+      _loading = false;
       _outputs = output;
     });
+
+
   }
 
   @override
@@ -67,6 +66,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
     await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image == null) return null;
     setState(() {
+      _loading = true;
       _image = image;
     });
     classifyImage(File(_image!.path));
@@ -77,6 +77,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
     await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image == null) return null;
     setState(() {
+      _loading = true;
       _image = image;
     });
     classifyImage(File(_image!.path));
@@ -140,27 +141,18 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                   ),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: GestureDetector(
-                      onTap: (){
-                        _openBottomSheet(
-                            context,
-                            _outputs?[0]["label"],
-                            'Confidence: ${((_outputs?[0]["confidence"]) * 100).toStringAsFixed(2)} %'
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            color: Colors.black26,
-                            borderRadius: BorderRadius.circular(15)),
-                        padding: const EdgeInsets.all(20),
-                        child: Text(
-                          "${_outputs?[0]["label"]}",
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
+                    child: Container(
+                      margin: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          color: Colors.black26,
+                          borderRadius: BorderRadius.circular(15)),
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        _outputs?[0]["label"] ?? "",
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
                       ),
                     ),
                   ),
@@ -228,75 +220,4 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
       ),
     );
   }
-
-  void _openBottomSheet(BuildContext context, String plantName, String conf) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context){
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 10
-            ),
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: double.infinity,
-            color: Colors.white,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                      onPressed: (){
-                        Get.back();
-                      },
-                      child: const Text("Back",)
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Plant Name: $plantName'),
-                    Text(conf),
-                  ],
-                ),
-                Text(infoData[plantName],
-                 maxLines: 5,
-                ),
-              ],
-            ),
-          );
-        }
-    );
-  }
-
-
-
-
-  Map<String, dynamic> infoData = {
-    'Adenium': 'Humidity levels:\t 50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    'Air Plant': 'Water : \tSpray water 4 times in a week	 	\nPlant Sight:\tIndoor',
-    'Alovera': 'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	\nSun:\tSun Light	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    'Araian Wax': 'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tSemi Indoor',
-    'Baby Tears': 'Humidity levels : \t75-76%	 \nMoisture:\t55-76%		\nTemp: \t18-30℃	\nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Bonsai': 'Humidity levels :\t40-50%	\nMoisture:\t40-50%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Bunny Cactus': 'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Cactus': 'Water: \tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light		\nPlant Sight:\tOutdoor',
-    'Caladium': 'Humidity levels:\t50-70%		\nMoisture:\t50-70%	  \nTemp: \t18-25℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Elephant Ear': 'Humidity levels: \t50-70% 	 \nMoisture:\t50-70% 	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Jade Plant': 'Humidity levels:\t50-70%	 \nMoisture:\t50-70%	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight: \tSemi Indoor',
-    'Kamini Bonsai': 'Humidity levels :\t40-50%		\nMoisture:\t40-50%		\nTemp: \t18-30℃	\nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    "Kata Mukut": 'Humidity levels:\t50-70%	 \nMoisture:\t40-55%	 \nTemp: \t18-50℃	\nSun: \tIndirect Bright Sun Light/Full sunlight	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    "Lucky Bamboo": 'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Mini Bamboo': 'Humidity levels:\t50-70%	\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pencil Cactus': 'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pothos': 'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Snake Plant': 'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Spider Plant': 'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Wondering Jew': 'Humidity levels:\t50-70%	 \nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Unknown Object': 'Sorry Unknown Object Detected! \n\tTRY AGAIN'
-  };
-
-
 }

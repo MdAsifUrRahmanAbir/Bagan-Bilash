@@ -22,7 +22,13 @@ class HomePage extends StatelessWidget {
               Get.toNamed(Routes.plantDetectPage);
             },
             text: Strings.plantDetection
-          )
+          ),
+          // _buttonWidget(
+          //   onTap: (){
+          //     Get.toNamed(Routes.plantDetectPage);
+          //   },
+          //   text: Strings.plantDetection
+          // )
         ],
       ),
     );
