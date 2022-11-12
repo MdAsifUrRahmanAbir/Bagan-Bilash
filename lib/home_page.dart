@@ -23,12 +23,15 @@ class HomePage extends StatelessWidget {
             },
             text: Strings.plantDetection
           ),
-          // _buttonWidget(
-          //   onTap: (){
-          //     Get.toNamed(Routes.plantDetectPage);
-          //   },
-          //   text: Strings.plantDetection
-          // )
+
+          const SizedBox(height: 20,),
+
+          _buttonWidget(
+            onTap: (){
+              Get.toNamed(Routes.plantDetectPage2);
+            },
+            text: Strings.plantRog
+          )
         ],
       ),
     );

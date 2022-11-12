@@ -22,11 +22,11 @@ class Routes{
     ),
     GetPage(
       name: plantDetectPage,
-      page: () =>  const PlantDetectPage(),
+      page: () =>  PlantDetectPage(),
     ),
     GetPage(
       name: plantDetectPage2,
-      page: () =>  const PlantDetectPage2(),
+      page: () =>  PlantDetectPage2(),
     ),
   ];
 }

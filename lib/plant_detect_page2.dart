@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 
@@ -11,31 +12,29 @@ class PlantDetectPage2 extends StatefulWidget {
   const PlantDetectPage2({Key? key}) : super(key: key);
 
   @override
-  State<PlantDetectPage2> createState() => _PlantDetectPageState();
+  State<PlantDetectPage2> createState() => _PlantDetectPage2State();
 }
 
-class _PlantDetectPageState extends State<PlantDetectPage2> {
+class _PlantDetectPage2State extends State<PlantDetectPage2> {
   List? _outputs;
   XFile? _image;
-  bool _loading = false;
+  String? plantName;
 
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
-    _loading = true;
 
     loadModel().then((value) {
       setState(() {
-        _loading = false;
       });
     });
   }
 
   loadModel() async {
     await Tflite.loadModel(
-      model: "assets/model_unquant.tflite",
-      labels: "assets/labels.txt",
+      model: "assets/PlantsRog/model_unquant.tflite",
+      labels: "assets/PlantsRog/labels.txt",
     );
   }
 
@@ -47,12 +46,14 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
         numResults: 2,
         threshold: 0.2,
         asynch: true);
-    setState(() {
-      _loading = false;
-      _outputs = output;
+
+    output?.forEach((element) {
+      print(element);
     });
 
-
+    setState(() {
+      _outputs = output;
+    });
   }
 
   @override
@@ -66,7 +67,6 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
     await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image == null) return null;
     setState(() {
-      _loading = true;
       _image = image;
     });
     classifyImage(File(_image!.path));
@@ -77,7 +77,6 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
     await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image == null) return null;
     setState(() {
-      _loading = true;
       _image = image;
     });
     classifyImage(File(_image!.path));
@@ -91,7 +90,7 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
 
       appBar: AppBar(
         title: const Text(
-          Strings.plantDetection
+            Strings.plantDetection
         ),
         centerTitle: true,
       ),
@@ -141,18 +140,27 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
                   ),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          color: Colors.black26,
-                          borderRadius: BorderRadius.circular(15)),
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        _outputs?[0]["label"] ?? "",
-                        style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
+                    child: GestureDetector(
+                      onTap: (){
+                        _openBottomSheet(
+                            context,
+                            _outputs?[0]["label"],
+                            'Confidence: ${((_outputs?[0]["confidence"]) * 100).toStringAsFixed(2)} %'
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: Colors.black26,
+                            borderRadius: BorderRadius.circular(15)),
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          "${_outputs?[0]["label"]}",
+                          style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -220,4 +228,45 @@ class _PlantDetectPageState extends State<PlantDetectPage2> {
       ),
     );
   }
+
+  void _openBottomSheet(BuildContext context, String plantName, String conf) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context){
+          return Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 10
+            ),
+            height: MediaQuery.of(context).size.height * 0.3,
+            width: double.infinity,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: TextButton(
+                      onPressed: (){
+                        Get.back();
+                      },
+                      child: const Text("Back",)
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Plant Name: $plantName'),
+                    Text(conf),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+    );
+  }
+
+
 }

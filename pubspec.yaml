@@ -39,3 +39,5 @@ flutter:
   assets:
     - assets/labels.txt
     - assets/model_unquant.tflite
+    - assets/PlantsRog/labels.txt
+    - assets/PlantsRog/model_unquant.tflite
