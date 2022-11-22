@@ -4,5 +4,9 @@ class Strings {
 
   static const String homePage = 'Home Page';
   static const String plantDetection = 'Plant Detection';
-  static const String plantRog = 'Plant Desis Detection';
+  static const String plantRog = 'Diseases Detection';
+
+  static const String irrigationSystem = 'Irrigation System';
+  static const String soilDetection = 'Soil Detection';
+
 }

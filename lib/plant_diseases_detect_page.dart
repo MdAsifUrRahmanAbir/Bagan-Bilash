@@ -7,14 +7,15 @@ import 'package:flutter_tflite/flutter_tflite.dart';
 
 import 'utils/strings.dart';
 
-class PlantDetectPage extends StatefulWidget {
-  const PlantDetectPage({Key? key}) : super(key: key);
+class PlantDiseasesDetectPage extends StatefulWidget {
+  const PlantDiseasesDetectPage({Key? key}) : super(key: key);
 
   @override
-  State<PlantDetectPage> createState() => _PlantDetectPageState();
+  State<PlantDiseasesDetectPage> createState() =>
+      _PlantDiseasesDetectPageState();
 }
 
-class _PlantDetectPageState extends State<PlantDetectPage> {
+class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
   List? _outputs;
   XFile? _image;
   String? plantName;
@@ -31,8 +32,8 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
 
   loadModel() async {
     await Tflite.loadModel(
-      model: "assets/model_unquant.tflite",
-      labels: "assets/labels.txt",
+      model: "assets/PlantsRog/model_unquant.tflite",
+      labels: "assets/PlantsRog/labels.txt",
     );
   }
 
@@ -87,7 +88,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text(Strings.plantDetection),
+          title: const Text(Strings.plantRog),
           centerTitle: true,
           backgroundColor: Colors.green,
         ),
@@ -190,23 +191,23 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
               color: Colors.grey.withOpacity(0.1),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(25.0),
-                  topLeft: Radius.circular(25.0),
+                  topRight: Radius.circular(15.0),
+                  topLeft: Radius.circular(15.0),
                 ),
               ),
               child: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15.0),
-                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(25.0),
+                      topLeft: Radius.circular(25.0),
                     ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
@@ -221,7 +222,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                             )),
                       ),
                       Container(
-                        margin: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
@@ -249,13 +250,12 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         context: context,
         builder: (context) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            height: MediaQuery.of(context).size.height * 0.3,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
             width: double.infinity,
             color: Colors.white,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
                   alignment: Alignment.topRight,
@@ -274,10 +274,22 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                     Text(conf),
                   ],
                 ),
-                Text(
-                  infoData[plantName],
-                  maxLines: 5,
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: AssetImage(
+                        medicineImage[plantName],
+                      ),
+                    ),
+                    Text(
+                      infoData[plantName],
+                      maxLines: 5,
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           );
@@ -285,46 +297,21 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
   }
 
   Map<String, dynamic> infoData = {
-    'Adenium':
-        'Humidity levels:\t 50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    'Air Plant':
-        'Water : \tSpray water 4 times in a week	 	\nPlant Sight:\tIndoor',
-    'Alovera':
-        'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	\nSun:\tSun Light	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    'Araian Wax':
-        'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tSemi Indoor',
-    'Baby Tears':
-        'Humidity levels : \t75-76%	 \nMoisture:\t55-76%		\nTemp: \t18-30℃	\nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Bonsai':
-        'Humidity levels :\t40-50%	\nMoisture:\t40-50%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Bunny Cactus':
-        'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Cactus':
-        'Water: \tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light		\nPlant Sight:\tOutdoor',
-    'Caladium':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%	  \nTemp: \t18-25℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Elephant Ear':
-        'Humidity levels: \t50-70% 	 \nMoisture:\t50-70% 	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Jade Plant':
-        'Humidity levels:\t50-70%	 \nMoisture:\t50-70%	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight: \tSemi Indoor',
-    'Kamini Bonsai':
-        'Humidity levels :\t40-50%		\nMoisture:\t40-50%		\nTemp: \t18-30℃	\nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    "Kata Mukut":
-        'Humidity levels:\t50-70%	 \nMoisture:\t40-55%	 \nTemp: \t18-50℃	\nSun: \tIndirect Bright Sun Light/Full sunlight	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    "Lucky Bamboo":
-        'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Mini Bamboo':
-        'Humidity levels:\t50-70%	\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pencil Cactus':
-        'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pothos':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Snake Plant':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Spider Plant':
-        'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Wondering Jew':
-        'Humidity levels:\t50-70%	 \nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Unknown Object': 'Sorry Unknown Object Detected! \n\tTRY AGAIN!!'
+    'Ant':
+        '1.Mix 2 tea-spoon Finis in 1 litre water \n2.Aply the water on plants',
+    'Fungus':
+        '1.Mix half tea-spoon SAAF in 1 litre water\n2.Spray it on plant leaf',
+    'Mileybug':
+        '1.mix 1 ml Fighter in 1 litre water\n2.Spray the mixed water on the body of Mili Bug ',
+    'White Fly': '1.Mix 0.5 ML Tido in 1 litre water\n2.Spray it on plant leaf',
+    'Unknown Diseases': 'Sorry Unknown Diseases Detected! \n\tTRY AGAIN!!'
+  };
+
+  Map<String, dynamic> medicineImage = {
+    'Ant': 'assets/medicine/Ant.jpg',
+    'Fungus': 'assets/medicine/Fungus.jpg',
+    'Mileybug': 'assets/medicine/Mileybug.jpg',
+    'White Fly': 'assets/medicine/White Fly.jpg',
+    'Unknown Diseases': 'assets/medicine/Unknown Diseases.png'
   };
 }

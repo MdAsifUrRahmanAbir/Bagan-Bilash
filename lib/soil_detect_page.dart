@@ -7,14 +7,14 @@ import 'package:flutter_tflite/flutter_tflite.dart';
 
 import 'utils/strings.dart';
 
-class PlantDetectPage extends StatefulWidget {
-  const PlantDetectPage({Key? key}) : super(key: key);
+class SoilDetectPage extends StatefulWidget {
+  const SoilDetectPage({Key? key}) : super(key: key);
 
   @override
-  State<PlantDetectPage> createState() => _PlantDetectPageState();
+  State<SoilDetectPage> createState() => _SoilDetectPageState();
 }
 
-class _PlantDetectPageState extends State<PlantDetectPage> {
+class _SoilDetectPageState extends State<SoilDetectPage> {
   List? _outputs;
   XFile? _image;
   String? plantName;
@@ -31,8 +31,8 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
 
   loadModel() async {
     await Tflite.loadModel(
-      model: "assets/model_unquant.tflite",
-      labels: "assets/labels.txt",
+      model: "assets/soilDetect/model_unquant.tflite",
+      labels: "assets/soilDetect/labels.txt",
     );
   }
 
@@ -62,7 +62,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
 
   Future getImageCamera() async {
     var image =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+    await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
     if (image == null) return null;
     setState(() {
       _image = image;
@@ -72,7 +72,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
 
   Future getImageGallery() async {
     var image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image == null) return null;
     setState(() {
       _image = image;
@@ -80,19 +80,17 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
     classifyImage(File(_image!.path));
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text(Strings.plantDetection),
-          centerTitle: true,
-          backgroundColor: Colors.green,
-        ),
-        body: _bodyWidget(context),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(Strings.soilDetection),
+        centerTitle: true,
+        backgroundColor: Colors.green,
       ),
+      body: _bodyWidget(context),
     );
   }
 
@@ -190,23 +188,23 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
               color: Colors.grey.withOpacity(0.1),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(25.0),
-                  topLeft: Radius.circular(25.0),
+                  topRight: Radius.circular(15.0),
+                  topLeft: Radius.circular(15.0),
                 ),
               ),
               child: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(15.0),
-                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(25.0),
+                      topLeft: Radius.circular(25.0),
                     ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
@@ -221,7 +219,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                             )),
                       ),
                       Container(
-                        margin: const EdgeInsets.all(20),
+                        margin: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
                           color: Colors.green,
                           shape: BoxShape.circle,
@@ -249,13 +247,12 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         context: context,
         builder: (context) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            height: MediaQuery.of(context).size.height * 0.3,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
             width: double.infinity,
             color: Colors.white,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
                   alignment: Alignment.topRight,
@@ -274,10 +271,22 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                     Text(conf),
                   ],
                 ),
-                Text(
-                  infoData[plantName],
-                  maxLines: 5,
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage(
+                        'assets/image/4.jpeg',
+                      ),
+                    ),
+                    Text(
+                      infoData[plantName],
+                      maxLines: 5,
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           );
@@ -285,46 +294,31 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
   }
 
   Map<String, dynamic> infoData = {
-    'Adenium':
-        'Humidity levels:\t 50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    'Air Plant':
-        'Water : \tSpray water 4 times in a week	 	\nPlant Sight:\tIndoor',
+    'Burnt ash soil':
+      'Minerals: \n\tHigh Minerals:iron, manganese, boron, copper and zinc\n\tLow Minerals :Need To mix Gerden Soil + NPK\nOrganic Matter: Nearly 10%\n\nMunsell Color: GLEY2 6/10G',
+
+    'Composed Soil':
+      'Minerals: \n\tHigh Minerals:-Nitrogen, Phosphorus, Potassium, Sulphur, Magnesium, Calcium\n\tLow Minerals :-Null(Good For Plant)\nOrganic Matter: 16.67-23.70%\n\nMunsell Color:10R3/1',
+
     'Alovera':
-        'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	\nSun:\tSun Light	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    'Araian Wax':
-        'Humidity levels: \t40-70%	\nMoisture:\t40-70%	  \nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tSemi Indoor',
-    'Baby Tears':
-        'Humidity levels : \t75-76%	 \nMoisture:\t55-76%		\nTemp: \t18-30℃	\nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Bonsai':
-        'Humidity levels :\t40-50%	\nMoisture:\t40-50%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Bunny Cactus':
-        'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Cactus':
-        'Water: \tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light		\nPlant Sight:\tOutdoor',
-    'Caladium':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%	  \nTemp: \t18-25℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Elephant Ear':
-        'Humidity levels: \t50-70% 	 \nMoisture:\t50-70% 	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Jade Plant':
-        'Humidity levels:\t50-70%	 \nMoisture:\t50-70%	\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight: \tSemi Indoor',
-    'Kamini Bonsai':
-        'Humidity levels :\t40-50%		\nMoisture:\t40-50%		\nTemp: \t18-30℃	\nSun: \tSun Light	 \nPlant Sight:\tOutdoor',
-    "Kata Mukut":
-        'Humidity levels:\t50-70%	 \nMoisture:\t40-55%	 \nTemp: \t18-50℃	\nSun: \tIndirect Bright Sun Light/Full sunlight	  \nPlant Sight:\tSemi Indoor/Outdoor',
-    "Lucky Bamboo":
-        'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Mini Bamboo':
-        'Humidity levels:\t50-70%	\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pencil Cactus':
-        'Water:\tWhen soil dry then watering 70-90%		\nTemp: \t18-50℃	 \nSun: \tSun Light	  \nPlant Sight:\tOutdoor',
-    'Pothos':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Snake Plant':
-        'Humidity levels:\t50-70%		\nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Spider Plant':
-        'Humidity levels:\t50-60%		\nMoisture:\t50-60%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Wondering Jew':
-        'Humidity levels:\t50-70%	 \nMoisture:\t50-70%		\nTemp: \t18-30℃	 \nSun: \tIndirect Bright Sun Light	  \nPlant Sight:\tIndoor',
-    'Unknown Object': 'Sorry Unknown Object Detected! \n\tTRY AGAIN!!'
+      'Minerals: \n\tigh Minerals: Calcium carbonate and Phosphate\n\tLow Minerals :  Need Of Mixed Gerden Soil + Nitrogen, Phosphorus, and Potassium\nOrganic Matter: 0.7%\n\nMunsell Color:2.5Y7/2',
+
+    'Gerden soil':
+      'Minerals: \n\tHigh Minerals:Boron, Silicon, Calcium, Magnesium, Carbon, Potassium and Copper.\n\tLow Minerals :Nitrogen & Phosphorus\nOrganic Matter:2–10%\n\nMunsell Color:5YR5/3',
+
+    'Gray Soil':
+      'Minerals: \n\tHigh Minerals:Magnesium, Carbonates of Lime, Quartz, Kaolin and other Clay Minerals.\n\tLow Minerals :Nitrogen, Phosphorus, and Potassium\nOrganic Matter:0-3%\n\nMunsell Color: GLEY2 4/10G',
+
+    'Regur Soil':
+      'Minerals: \n\tHigh Minerals:-Calcium carbonate, Magnesium, Potash and Lime, Iron, Aluminium.\n\tLow Minerals :-Nitrogen and Phosphorus.\nOrganic Matter:3-6%\n\nMunsell Color: 10R 2.5/1',
+
+    'Terra Rossa':
+      'Minerals: \n\tHigh Minerals:Nitrogen, Phosphorus, and Potassium,  Iron oxide\n\tLow Minerals :This Soil Is very Hard, \n\tNeed to Mix:30%Terra Rossa + 30%Sand + 40%Composed Soil\nOrganic Matter:High content of organic matter\n\nMunsell Color: 2.5R4/6',
+
+    'White Sand':
+      'Minerals: \n\tHigh Minerals:Silica and Oxygen\n\tLow Minerals: Need To Mix Gerden Soil + NPK\nOrganic Matter:0.26%\n\nMunsell Color: 5Y8/1',
+
+    'Unknown Object':
+      'Sorry Unknown Object Detected! \n\tTRY AGAIN!!'
   };
 }

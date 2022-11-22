@@ -37,7 +37,11 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/image/
+    - assets/medicine/
     - assets/labels.txt
     - assets/model_unquant.tflite
+    - assets/soilDetect/labels.txt
+    - assets/soilDetect/model_unquant.tflite
     - assets/PlantsRog/labels.txt
     - assets/PlantsRog/model_unquant.tflite
