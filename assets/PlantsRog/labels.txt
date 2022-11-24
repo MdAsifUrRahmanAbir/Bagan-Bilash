@@ -2,4 +2,3 @@ Ant
 Fungus
 Mileybug
 White Fly
-Unknown Diseases

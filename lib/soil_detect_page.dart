@@ -293,6 +293,7 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
         });
   }
 
+
   Map<String, dynamic> infoData = {
     'Burnt ash soil':
       'Minerals: \n\tHigh Minerals:iron, manganese, boron, copper and zinc\n\tLow Minerals :Need To mix Gerden Soil + NPK\nOrganic Matter: Nearly 10%\n\nMunsell Color: GLEY2 6/10G',
