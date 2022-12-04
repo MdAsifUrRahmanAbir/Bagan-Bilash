@@ -17,6 +17,7 @@ dependencies:
   image_picker:
   flutter_tflite:
   camera: ^0.10.0+4
+  firebase_core: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +26,8 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   change_app_package_name: ^1.1.0
   flutter_launcher_icons: ^0.9.3
+
+  firebase_database: ^10.0.6
 
 flutter_icons:
   android: "launcher_icon"

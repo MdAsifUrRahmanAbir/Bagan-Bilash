@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "904070121378",
+    "firebase_url": "https://akiful-a568e-default-rtdb.firebaseio.com",
+    "project_id": "akiful-a568e",
+    "storage_bucket": "akiful-a568e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904070121378:android:f7584d755d7b27411a94fb",
+        "android_client_info": {
+          "package_name": "net.baganbilash.baganbilash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904070121378-gbb6rir0bhd0df6rdsrm27vfo15qqjh8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD64jk9h_1OFjDtC2jRLtzPH5V8HSAbOk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904070121378-gbb6rir0bhd0df6rdsrm27vfo15qqjh8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
