@@ -1,4 +1,5 @@
 
+import 'package:baganbilash/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
@@ -28,15 +29,12 @@ class _IrrigationPageState extends State<IrrigationPage> {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child('SoilProjectAuto').get();
     if (snapshot.exists) {
-      print(snapshot.value);
       soilAuto = snapshot.value as Map;
+      fetchData2();
     } else {
-      const SnackBar(
-        content: Text('No Soil Project Auto data available.'),
-      );
       print('No Soil Project Auto data available.');
+      isLoading.value = false;
     }
-    fetchData2();
   }
 
   fetchData2() async {
@@ -58,6 +56,14 @@ class _IrrigationPageState extends State<IrrigationPage> {
         title: const Text(Strings.irrigationSystem),
         centerTitle: true,
         backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+              onPressed: (){
+
+              },
+              icon: const Icon(Icons.refresh_sharp)
+          )
+        ],
       ),
       body: Obx(() => isLoading.value
           ? const Center(child: Text('Loading...'),)
@@ -86,27 +92,31 @@ class _IrrigationPageState extends State<IrrigationPage> {
 
         const Divider(),
 
-        Row(
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: (){
+        InkWell(
+          onTap: () async{
+           await FirebaseDatabase.instance
+                .ref('SoilProjectAuto/motor')
+                .set(soilAuto['motor'].toString() == '1' ? '0' : '1')
+                .then((_) {
+              Get.offNamed(Routes.homePage);
+           })
+                .catchError((error) {
 
-                },
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10
-                  ),
-                  child: _viewWidget('Motor Switch',
-                      'assets/image/14.jpg',
-                      soilAuto['motor'].toString() == '1' ? 'Motor ON' : 'Motor OFF'
-                  ),
-                ),
+              // The write failed...
+            });
 
-              ),
-            )
-          ],
+          },
+          child: Card(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 50,
+              vertical: 10
+            ),
+            child: _viewWidget('Motor Switch',
+                'assets/image/14.jpg',
+                soilAuto['motor'].toString() == '1' ? 'Motor ON' : 'Motor OFF'
+            ),
+          ),
+
         )
 
       ],
