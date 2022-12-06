@@ -1,5 +1,4 @@
 
-import 'package:baganbilash/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
@@ -59,15 +58,22 @@ class _IrrigationPageState extends State<IrrigationPage> {
         actions: [
           IconButton(
               onPressed: (){
-
+                setState(() {
+                  fetchData1();
+                });
               },
               icon: const Icon(Icons.refresh_sharp)
           )
         ],
       ),
-      body: Obx(() => isLoading.value
-          ? const Center(child: Text('Loading...'),)
-          : _bodyWidget(context)),
+      body: RefreshIndicator(
+        onRefresh: () async{
+         await fetchData1();
+        },
+        child: Obx(() => isLoading.value
+            ? const Center(child: Text('Loading...'),)
+            : _bodyWidget(context)),
+      ),
     );
   }
 
@@ -92,31 +98,63 @@ class _IrrigationPageState extends State<IrrigationPage> {
 
         const Divider(),
 
-        InkWell(
-          onTap: () async{
-           await FirebaseDatabase.instance
-                .ref('SoilProjectAuto/motor')
-                .set(soilAuto['motor'].toString() == '1' ? '0' : '1')
-                .then((_) {
-              Get.offNamed(Routes.homePage);
-           })
-                .catchError((error) {
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            InkWell(
+              onTap: () async{
 
-              // The write failed...
-            });
+               await FirebaseDatabase.instance
+                    .ref('SoilProjectAuto/motor')
+                    .set(soilAuto['motor'].toString() == '1' ? '0' : '1')
+                    .then((_) {
+                  fetchData1();
+               })
+                    .catchError((error) {
 
-          },
-          child: Card(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 50,
-              vertical: 10
+                  // The write failed...
+                });
+
+              },
+              child: Card(
+                margin: const EdgeInsets.symmetric(
+                  vertical: 10
+                ),
+                child: _viewWidget('Motor Pump',
+                    'assets/image/14.jpg',
+                    soilAuto['motor'].toString() == '1' ? 'Motor ON' : 'Motor OFF'
+                ),
+              ),
+
             ),
-            child: _viewWidget('Motor Switch',
-                'assets/image/14.jpg',
-                soilAuto['motor'].toString() == '1' ? 'Motor ON' : 'Motor OFF'
-            ),
-          ),
+            InkWell(
+              onTap: () async{
 
+               // await FirebaseDatabase.instance
+               //      .ref('SoilProjectAuto/motor')
+               //      .set(soilAuto['soil'].toString() == '1' ? '0' : '1')
+               //      .then((_) {
+               //    fetchData1();
+               // })
+               //      .catchError((error) {
+               //
+               //    // The write failed...
+               //  });
+
+              },
+              child: Card(
+                margin: const EdgeInsets.symmetric(
+                    vertical: 10
+                ),
+                child: _viewWidget('Soil Switch',
+                    'assets/image/16.jpg',
+                    'BLANK'
+                  // soilAuto['soil'].toString() == '1' ? 'Motor ON' : 'Motor OFF'
+                ),
+              ),
+
+            ),
+          ],
         )
 
       ],
