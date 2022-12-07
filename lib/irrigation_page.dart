@@ -31,6 +31,7 @@ class _IrrigationPageState extends State<IrrigationPage> {
     if (snapshot.exists) {
       soilAuto = snapshot.value as Map;
       switchButton.value = soilAuto['motor'].toString() == '1' ? true : false;
+      switchButton2.value = soilAuto['mode'].toString() == '1' ? true : false;
       fetchData2();
     } else {
       // print('No Soil Project Auto data available.');
@@ -94,7 +95,9 @@ class _IrrigationPageState extends State<IrrigationPage> {
         const Divider(),
         _viewWidget(
             'Rain',
-            'assets/image/4.jpeg',
+            soilAuto['Rain'].toString() == "1"
+                ? 'assets/image/megh.jpg'
+                : 'assets/image/rod.jpg',
             soilAuto['Rain'].toString() == "1"
                 ? 'It is Raining..'
                 : 'It is not Raining.'),
@@ -120,15 +123,7 @@ class _IrrigationPageState extends State<IrrigationPage> {
 
 
          const Divider(),
-        _viewWidget(
-            'Motor Mode',
-            'assets/image/14.jpg',
-            soilAuto['soil'].toString() == '0'
-                ? 'AUTO'
-                : 'MANUAL'),
-
-
-
+        const Text('Machine Buttons'),
         const Divider(),
         InkWell(
           onTap: () async {
@@ -156,7 +151,7 @@ class _IrrigationPageState extends State<IrrigationPage> {
                           : 'OFF'
                   ),
 
-                  Switch(
+                  Obx(() => Switch(
                       value: switchButton.value,
                       onChanged: (value) async {
                         await FirebaseDatabase.instance
@@ -168,10 +163,33 @@ class _IrrigationPageState extends State<IrrigationPage> {
                         }).catchError((error) {
                           // The write failed...
                         });
-                      })
+                      }
+                   )),
                 ],
               )),
-        )
+        ),
+
+
+        Obx(() => SwitchListTile(
+            subtitle: Text(soilAuto['mode'].toString() == '0'
+              ? 'Click for AUTO'
+              : 'Click for  MANUAL'),
+            title: const Text('Motor Mood'),
+            value: switchButton2.value,
+            onChanged: (value) async{
+              await FirebaseDatabase.instance
+                  .ref('SoilProjectAuto/mode')
+                  .set(
+                  soilAuto['mode'].toString() == '1' ? '0' : '1')
+                  .then((_) {
+                fetchData1();
+              }).catchError((error) {
+                // The write failed...
+              });
+            }
+        ))
+
+
       ],
     );
   }
