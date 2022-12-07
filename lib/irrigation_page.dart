@@ -33,7 +33,7 @@ class _IrrigationPageState extends State<IrrigationPage> {
       switchButton.value = soilAuto['motor'].toString() == '1' ? true : false;
       fetchData2();
     } else {
-      print('No Soil Project Auto data available.');
+      // print('No Soil Project Auto data available.');
       isLoading.value = false;
     }
   }
@@ -42,10 +42,10 @@ class _IrrigationPageState extends State<IrrigationPage> {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child('test').get();
     if (snapshot.exists) {
-      print(snapshot.value);
+      // print(snapshot.value);
       test = snapshot.value as Map;
     } else {
-      print('No data available.');
+      // print('No data available.');
     }
     isLoading.value = false;
   }
