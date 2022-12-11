@@ -253,11 +253,13 @@ class _IrrigationPageState extends State<IrrigationPage> {
           Text(
             text,
             style: const TextStyle(
-                color: Colors.green, fontWeight: FontWeight.w700),
+                color: Colors.green, fontWeight: FontWeight.w700, fontSize: 18),
           ),
           Text(
             value,
             textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 18),
           ),
         ],
       ),
