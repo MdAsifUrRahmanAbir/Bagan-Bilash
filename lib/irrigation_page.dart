@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
@@ -12,9 +14,16 @@ class IrrigationPage extends StatefulWidget {
 }
 
 class _IrrigationPageState extends State<IrrigationPage> {
+  int i = 0;
   @override
-  void initState() {
+   void initState() {
     fetchData1();
+    Timer.periodic(const Duration(seconds: 2), (timer){
+      setState(() {
+        fetchDataRealtime();
+      });
+    });
+
     super.initState();
   }
 
@@ -49,6 +58,30 @@ class _IrrigationPageState extends State<IrrigationPage> {
       // print('No data available.');
     }
     isLoading.value = false;
+  }
+
+  fetchDataRealtime() async {
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('SoilProjectAuto').get();
+    if (snapshot.exists) {
+      soilAuto = snapshot.value as Map;
+      switchButton.value = soilAuto['motor'].toString() == '1' ? true : false;
+      switchButton2.value = soilAuto['mode'].toString() == '1' ? true : false;
+      fetchData2();
+    } else {
+      // print('No Soil Project Auto data available.');
+    }
+  }
+
+  fetchDataRealTime2() async {
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('test').get();
+    if (snapshot.exists) {
+      // print(snapshot.value);
+      test = snapshot.value as Map;
+    } else {
+      // print('No data available.');
+    }
   }
 
   @override
@@ -87,30 +120,45 @@ class _IrrigationPageState extends State<IrrigationPage> {
       physics: const BouncingScrollPhysics(),
       children: [
 
+        Row(
+          children: [
+            Expanded(
+              child: _viewWidget(
+                  'Humidity', 'assets/image/13.jpg', "${test['Moist'].toString()} %"),
+            ),
+            const Divider(),
+            Expanded(
+                child: _viewWidget(
+                    'Rain',
+                    soilAuto['Rain'].toString() == "1"
+                        ? 'assets/image/megh.jpg'
+                        : 'assets/image/rod.jpg',
+                    soilAuto['Rain'].toString() == "1"
+                        ? 'It is Raining..'
+                        : 'It is not Raining.'),
+            )
 
-        _viewWidget(
-            'Humidity', 'assets/image/13.jpg', "${test['Moist'].toString()} %"),
 
-
+          ],
+        ),
         const Divider(),
-        _viewWidget(
-            'Rain',
-            soilAuto['Rain'].toString() == "1"
-                ? 'assets/image/megh.jpg'
-                : 'assets/image/rod.jpg',
-            soilAuto['Rain'].toString() == "1"
-                ? 'It is Raining..'
-                : 'It is not Raining.'),
 
+        Row(
+          children: [
+            Expanded(
+              child: _viewWidget('Humidity', 'assets/image/11.jpg',
+                  "${soilAuto['humidity'].toString()} %"),
+            ),
+            const Divider(),
 
-        const Divider(),
-        _viewWidget('Humidity', 'assets/image/11.jpg',
-            "${soilAuto['humidity'].toString()} %"),
+            Expanded(
+              child: _viewWidget('Temperature', 'assets/image/12.jpg',
+                  "${soilAuto['temperature'].toString()} C"),
+            )
 
+          ],
+        ),
 
-        const Divider(),
-        _viewWidget('Temperature', 'assets/image/12.jpg',
-            "${soilAuto['temperature'].toString()} C"),
 
 
         const Divider(),
