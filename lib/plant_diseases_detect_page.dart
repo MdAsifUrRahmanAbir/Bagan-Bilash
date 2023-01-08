@@ -47,7 +47,7 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
         asynch: true);
 
     output?.forEach((element) {
-      print(element);
+      debugPrint(element);
     });
 
     setState(() {
@@ -284,8 +284,7 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
                       ),
                     ),
                     Text(
-                      infoData[plantName],
-                      maxLines: 5,
+                      infoData[plantName]
                     ),
                   ],
                 ),

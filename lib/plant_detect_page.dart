@@ -46,7 +46,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         asynch: true);
 
     output?.forEach((element) {
-      print(element);
+      debugPrint(element);
     });
 
     setState(() {
@@ -250,11 +250,10 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         builder: (context) {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            height: MediaQuery.of(context).size.height * 0.3,
             width: double.infinity,
             color: Colors.white,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Align(
@@ -275,8 +274,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                   ],
                 ),
                 Text(
-                  infoData[plantName],
-                  maxLines: 5,
+                  infoData[plantName]
                 ),
               ],
             ),

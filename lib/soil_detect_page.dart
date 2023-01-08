@@ -46,7 +46,7 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
         asynch: true);
 
     output?.forEach((element) {
-      print(element);
+      debugPrint(element);
     });
 
     setState(() {
@@ -281,9 +281,7 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
                       ),
                     ),
                     Text(
-                      infoData[plantName],
-                      maxLines: 5,
-                    ),
+                      infoData[plantName]),
                   ],
                 ),
                 const SizedBox(height: 20),
