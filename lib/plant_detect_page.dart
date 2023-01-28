@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 
+import 'utils/custom_loading_api.dart';
 import 'utils/strings.dart';
 
 class PlantDetectPage extends StatefulWidget {
@@ -15,7 +16,8 @@ class PlantDetectPage extends StatefulWidget {
 }
 
 class _PlantDetectPageState extends State<PlantDetectPage> {
-  List? _outputs;
+  late List _outputs;
+  RxBool isLoading = false.obs;
   XFile? _image;
   String? plantName;
 
@@ -37,6 +39,8 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
   }
 
   classifyImage(File image) async {
+    isLoading.value = true;
+
     var output = await Tflite.runModelOnImage(
         path: image.path,
         imageMean: 0.0,
@@ -45,12 +49,11 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
         threshold: 0.2,
         asynch: true);
 
-    output?.forEach((element) {
-      debugPrint(element);
-    });
-
     setState(() {
-      _outputs = output;
+      _outputs = output!;
+      Future.delayed(const Duration(seconds: 1), (){
+        isLoading.value = false;
+      });
     });
   }
 
@@ -130,7 +133,9 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                       ),
                     ),
                   )
-                : Container(
+                : Obx(() => isLoading.value
+                  ? const CustomLoadingAPI()
+                  : Container(
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -144,8 +149,8 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                       alignment: Alignment.bottomCenter,
                       child: InkWell(
                         onTap: () {
-                          _openBottomSheet(context, _outputs?[0]["label"],
-                              'Confidence: ${((_outputs?[0]["confidence"]) * 100).toStringAsFixed(2)} %');
+                          _openBottomSheet(context, _outputs[0]["label"],
+                              'Confidence: ${((_outputs[0]["confidence"]) * 100).toStringAsFixed(2)} %');
                         },
                         child: Card(
                           color: Colors.white,
@@ -161,7 +166,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "${_outputs?[0]["label"]}",
+                                  "${_outputs[0]["label"]}",
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600,
@@ -180,7 +185,7 @@ class _PlantDetectPageState extends State<PlantDetectPage> {
                         ),
                       ),
                     ),
-                  ),
+                  )),
           ),
           Expanded(
             flex: 2,

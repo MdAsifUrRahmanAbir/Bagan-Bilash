@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 
+import 'utils/custom_loading_api.dart';
 import 'utils/strings.dart';
 
 class PlantDiseasesDetectPage extends StatefulWidget {
@@ -16,9 +17,12 @@ class PlantDiseasesDetectPage extends StatefulWidget {
 }
 
 class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
-  List? _outputs;
+  List _outputs = [];
+  // Map? _output;
   XFile? _image;
   String? plantName;
+
+  RxBool isLoading = false.obs;
 
   final ImagePicker _picker = ImagePicker();
   @override
@@ -26,7 +30,9 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
     super.initState();
 
     loadModel().then((value) {
-      setState(() {});
+      setState(() {
+
+      });
     });
   }
 
@@ -34,24 +40,35 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
     await Tflite.loadModel(
       model: "assets/PlantsRog/model_unquant.tflite",
       labels: "assets/PlantsRog/labels.txt",
+        numThreads: 1, // defaults to 1
+        isAsset: true, // defaults to true, set to false to load resources outside assets
+        useGpuDelegate: false
     );
+    setState(() {
+
+    });
   }
 
   classifyImage(File image) async {
+    isLoading.value = true;
     var output = await Tflite.runModelOnImage(
         path: image.path,
-        imageMean: 0.0,
-        imageStd: 255.0,
-        numResults: 2,
-        threshold: 0.2,
-        asynch: true);
-
-    output?.forEach((element) {
-      debugPrint(element);
-    });
+        numResults: 6,
+        threshold: 0.05,
+        imageMean: 127.5,
+        imageStd: 127.5,
+    );
 
     setState(() {
-      _outputs = output;
+
+    });
+
+
+    setState(() {
+      _outputs = output!;
+      Future.delayed(const Duration(seconds: 1), (){
+        isLoading.value = false;
+      });
     });
   }
 
@@ -131,57 +148,59 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
                       ),
                     ),
                   )
-                : Container(
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: FileImage(File(_image!.path)),
-                          fit: BoxFit.cover),
-                      color: Colors.transparent,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(25.0)),
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: InkWell(
-                        onTap: () {
-                          _openBottomSheet(context, _outputs?[0]["label"],
-                              'Confidence: ${((_outputs?[0]["confidence"]) * 100).toStringAsFixed(2)} %');
-                        },
-                        child: Card(
-                          color: Colors.white,
-                          shadowColor: Colors.green,
-                          elevation: 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15)),
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "${_outputs?[0]["label"]}",
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.green),
-                                ),
-                                const Text(
-                                  "CLICK ME",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.red),
-                                ),
-                              ],
+                : Obx(() => isLoading.value
+                  ? const CustomLoadingAPI()
+                  : Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: FileImage(File(_image!.path)),
+                            fit: BoxFit.cover),
+                        color: Colors.transparent,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: InkWell(
+                          onTap: () {
+                            _openBottomSheet(context, _outputs[0]["label"],
+                                'Confidence: ${((_outputs[0]["confidence"]) * 100).toStringAsFixed(2)} %');
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            shadowColor: Colors.green,
+                            elevation: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${_outputs[0]["label"]}",
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green),
+                                  ),
+                                  const Text(
+                                    "CLICK ME",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.red),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    )),
           ),
           Expanded(
             flex: 2,
@@ -245,7 +264,7 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
     );
   }
 
-  void _openBottomSheet(BuildContext context, String plantName, String conf) {
+  _openBottomSheet(BuildContext context, String plantName, String conf) {
     showModalBottomSheet(
         context: context,
         builder: (context) {

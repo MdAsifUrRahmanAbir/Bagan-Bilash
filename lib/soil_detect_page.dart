@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:baganbilash/utils/custom_loading_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +16,9 @@ class SoilDetectPage extends StatefulWidget {
 }
 
 class _SoilDetectPageState extends State<SoilDetectPage> {
-  List? _outputs;
+  late List _outputs;
+  RxBool isLoading = false.obs;
+
   XFile? _image;
   String? plantName;
 
@@ -37,6 +40,8 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
   }
 
   classifyImage(File image) async {
+    isLoading.value = true;
+
     var output = await Tflite.runModelOnImage(
         path: image.path,
         imageMean: 0.0,
@@ -45,12 +50,12 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
         threshold: 0.2,
         asynch: true);
 
-    output?.forEach((element) {
-      debugPrint(element);
-    });
 
     setState(() {
-      _outputs = output;
+      _outputs = output!;
+      Future.delayed(const Duration(seconds: 1), (){
+        isLoading.value = false;
+      });
     });
   }
 
@@ -128,57 +133,59 @@ class _SoilDetectPageState extends State<SoilDetectPage> {
                       ),
                     ),
                   )
-                : Container(
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: FileImage(File(_image!.path)),
-                          fit: BoxFit.cover),
-                      color: Colors.transparent,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(25.0)),
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: InkWell(
-                        onTap: () {
-                          _openBottomSheet(context, _outputs?[0]["label"],
-                              'Confidence: ${((_outputs?[0]["confidence"]) * 100).toStringAsFixed(2)} %');
-                        },
-                        child: Card(
-                          color: Colors.white,
-                          shadowColor: Colors.green,
-                          elevation: 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15)),
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "${_outputs?[0]["label"]}",
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.green),
-                                ),
-                                const Text(
-                                  "CLICK ME",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.red),
-                                ),
-                              ],
+                : Obx(() => isLoading.value
+                  ? const CustomLoadingAPI()
+                  : Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: FileImage(File(_image!.path)),
+                            fit: BoxFit.cover),
+                        color: Colors.transparent,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(25.0)),
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: InkWell(
+                          onTap: () {
+                            _openBottomSheet(context, _outputs[0]["label"],
+                                'Confidence: ${((_outputs[0]["confidence"]) * 100).toStringAsFixed(2)} %');
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            shadowColor: Colors.green,
+                            elevation: 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${_outputs[0]["label"]}",
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green),
+                                  ),
+                                  const Text(
+                                    "CLICK ME",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.red),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    )),
           ),
           Expanded(
             flex: 2,

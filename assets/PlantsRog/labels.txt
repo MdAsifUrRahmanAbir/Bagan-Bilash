@@ -1,4 +1,5 @@
-Ant
-Fungus
-Mileybug
-White Fly
+0 Ant
+1 Fungus
+2 Mileybug
+3 White Fly
+4 Unknown Object

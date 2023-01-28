@@ -15,9 +15,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: 
   image_picker:
-  flutter_tflite:
+  flutter_tflite: ^1.0.1
   camera: ^0.10.0+4
   firebase_core: ^2.3.0
+  flutter_spinkit:
 
 dev_dependencies:
   flutter_test:
