@@ -1,6 +1,8 @@
 # baganbilash
 
 A new Flutter project.
+https://teachablemachine.withgoogle.com/train/tiny_image
+
 
 ## Getting Started
 
