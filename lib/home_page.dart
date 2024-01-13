@@ -5,7 +5,7 @@ import 'utils/routes.dart';
 import 'utils/strings.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +30,13 @@ class HomePage extends StatelessWidget {
         ),
         children: [
 
-          _buttonWidget(
-            onTap: (){
-              Get.toNamed(Routes.plantDetectPage);
-            },
-            text: Strings.plantDetection,
-            image: 'assets/image/1.jpeg'
-          ),
+          // _buttonWidget(
+          //   onTap: (){
+          //     Get.toNamed(Routes.plantDetectPage);
+          //   },
+          //   text: Strings.plantDetection,
+          //   image: 'assets/image/1.jpeg'
+          // ),
           
           _buttonWidget(
             onTap: (){
@@ -46,21 +46,21 @@ class HomePage extends StatelessWidget {
             image: 'assets/image/2.jpeg'
           ),
 
-          _buttonWidget(
-            onTap: (){
-              Get.toNamed(Routes.soilDetectPage);
-            },
-            text: Strings.soilDetection,
-            image: 'assets/image/3.jpeg'
-          ),
+          // _buttonWidget(
+          //   onTap: (){
+          //     Get.toNamed(Routes.soilDetectPage);
+          //   },
+          //   text: Strings.soilDetection,
+          //   image: 'assets/image/3.jpeg'
+          // ),
 
-          _buttonWidget(
-            onTap: (){
-              Get.toNamed(Routes.irrigationPage);
-            },
-            text: Strings.irrigationSystem,
-            image: 'assets/image/4.jpeg'
-          )
+          // _buttonWidget(
+          //   onTap: (){
+          //     Get.toNamed(Routes.irrigationPage);
+          //   },
+          //   text: Strings.irrigationSystem,
+          //   image: 'assets/image/4.jpeg'
+          // )
         ],
       ),
       bottomNavigationBar: const LinearProgressIndicator(

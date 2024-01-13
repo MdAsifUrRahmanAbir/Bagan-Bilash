@@ -9,7 +9,7 @@ import 'utils/custom_loading_api.dart';
 import 'utils/strings.dart';
 
 class PlantDiseasesDetectPage extends StatefulWidget {
-  const PlantDiseasesDetectPage({Key? key}) : super(key: key);
+  const PlantDiseasesDetectPage({super.key});
 
   @override
   State<PlantDiseasesDetectPage> createState() =>
