@@ -7,7 +7,7 @@ import 'utils/routes.dart';
 import 'utils/strings.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -36,16 +36,16 @@ class _SplashScreenState extends State<SplashScreen> {
         alignment: Alignment.center,
         height: double.infinity,
         width: double.infinity,
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
 
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
 
-              children: const [
+              children: [
                 CircleAvatar(
                   radius: 60,
                   backgroundImage: AssetImage('assets/image/4.jpeg'),
@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ],
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30),
 
           ],
         ),

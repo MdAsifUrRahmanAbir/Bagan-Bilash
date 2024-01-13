@@ -4,9 +4,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CustomLoadingAPI extends StatelessWidget {
   const CustomLoadingAPI({
-    Key? key,
+    super.key,
     this.color = Colors.greenAccent,
-  }) : super(key: key);
+  });
   final Color color;
 
   @override
