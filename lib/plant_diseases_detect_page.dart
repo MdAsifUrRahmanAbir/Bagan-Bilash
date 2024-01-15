@@ -265,6 +265,7 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
   }
 
   _openBottomSheet(BuildContext context, String plantName, String conf) {
+    debugPrint("$plantName \n$conf");
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -322,7 +323,7 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
     'Mileybug':
         '1.mix 1 ml Fighter in 1 litre water\n2.Spray the mixed water on the body of Mili Bug ',
     'White Fly': '1.Mix 0.5 ML Tido in 1 litre water\n2.Spray it on plant leaf',
-    // 'Unknown Diseases': 'Sorry Unknown Diseases Detected! \n\tTRY AGAIN!!'
+    'Unknown Object': 'Sorry Unknown Diseases Detected! \n\tTRY AGAIN!!'
   };
 
   Map<String, dynamic> medicineImage = {
@@ -330,6 +331,6 @@ class _PlantDiseasesDetectPageState extends State<PlantDiseasesDetectPage> {
     'Fungus': 'assets/medicine/Fungus.jpg',
     'Mileybug': 'assets/medicine/Mileybug.jpg',
     'White Fly': 'assets/medicine/White Fly.jpg',
-    // 'Unknown Diseases': 'assets/medicine/Unknown Diseases.png'
+    'Unknown Object': 'assets/medicine/Unknown Diseases.png'
   };
 }
